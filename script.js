@@ -5,39 +5,32 @@ const gameBoard = (() => {
     [0, 0, 0],
     [0, 0, 0],
   ];
+  let x = 0;
+  let y = 0;
 
-  const initBoard = () => {
-    addEvents();
+  const saveCoordinates = (e) => {
+    x = e.target.dataset.x;
+    y = e.target.dataset.y;
+
+    storePLay();
+    fillCell(e.target);
   };
 
-  const addEvents = () => {
+  const addEvents = (() => {
     boardCells.forEach((cell) => {
-      cell.addEventListener("click", getCoordinates);
+      cell.addEventListener("click", saveCoordinates);
     });
-  };
+  })();
 
-  const getCoordinates = (e) => {
-    const x = e.target.dataset.x;
-    const y = e.target.dataset.y;
-
-    fillCell(x, y);
-  };
-
-  const fillCell = (x, y) => {
+  const storePLay = () => {
     board[x][y] = "X";
   };
 
-  const renderBoard = () => {
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        boardCells.forEach((cell) => {
-          console.log(cell);
-        });
-      }
-    }
+  const fillCell = (clickedCell) => {
+    clickedCell.textContent = "X";
   };
 
-  return { initBoard, renderBoard };
+  return { board };
 })();
 
-gameBoard.initBoard();
+console.log(gameBoard.board);
