@@ -1,12 +1,12 @@
 const gameBoard = (() => {
   const boardState = [
-    [0, "X", 0],
+    [0, 0, 0],
     [0, 0, 0],
     [0, 0, 0],
   ];
 
-  const storePlay = (x, y) => {
-    boardState[x][y] = "X";
+  const storePlay = (x, y, player) => {
+    boardState[x][y] = playerOne.getPlayerSymbol();
   };
 
   const render = () => {
@@ -28,7 +28,7 @@ const playTurn = (() => {
     let x = e.target.dataset.x;
     let y = e.target.dataset.y;
 
-    gameBoard.storePlay(x, y, player);
+    gameBoard.storePlay(x, y, playerOne);
     gameBoard.render();
   };
 
@@ -41,16 +41,13 @@ const playTurn = (() => {
   return {};
 })();
 
-/* const player = () => {
+const player = () => {
   let name = "Gabriel";
   let symbol = "X";
   let score = 0;
 
-  const getPlayerSymbol = () => {
-    this.symbol;
-  };
-
+  const getPlayerSymbol = () => symbol;
   return { getPlayerSymbol };
 };
 
-console.log(player.getPlayerSymbol); */
+const playerOne = player();
