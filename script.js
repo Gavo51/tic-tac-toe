@@ -5,8 +5,14 @@ const gameBoard = (() => {
     [0, 0, 0],
   ];
 
-  const storePlay = (x, y, player) => {
-    boardState[x][y] = playerOne.getPlayerSymbol();
+  const initialize = () => {
+    document.querySelectorAll(".board-cell").forEach((cell) => {
+      cell.addEventListener("click", playTurn.drawq);
+    });
+  };
+
+  const update = (x, y, player) => {
+    boardState[x][y] = player.symbol;
   };
 
   const render = () => {
@@ -20,34 +26,36 @@ const gameBoard = (() => {
     }
   };
 
-  return { storePlay, render, boardState };
+  return { initialize, update, render };
 })();
 
 const playTurn = (() => {
-  const saveCoordinates = (e) => {
+  const drawq = (e) => {
     let x = e.target.dataset.x;
     let y = e.target.dataset.y;
 
-    gameBoard.storePlay(x, y, playerOne);
+    console.log("working");
+
+    gameBoard.update(x, y, playerOne);
     gameBoard.render();
   };
 
-  const addEvents = (() => {
-    document.querySelectorAll(".board-cell").forEach((cell) => {
-      cell.addEventListener("click", saveCoordinates);
-    });
-  })();
-
-  return {};
+  return { drawq };
 })();
 
-const player = () => {
-  let name = "Gabriel";
-  let symbol = "X";
+const playRound = (() => {})();
+
+// Player creation factory function
+const player = (name, symbol) => {
   let score = 0;
 
-  const getPlayerSymbol = () => symbol;
-  return { getPlayerSymbol };
+  const getScore = () => score;
+  const updateScore = () => score++;
+
+  return { name, symbol, getScore, updateScore };
 };
 
-const playerOne = player();
+const playerOne = player("Gabriel", "X");
+const playerTwo = player("Gandalf", "0");
+
+gameBoard.initialize();
