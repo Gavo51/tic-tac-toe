@@ -7,9 +7,11 @@ const gameBoard = (() => {
 
   const initialize = () => {
     document.querySelectorAll(".board-cell").forEach((cell) => {
-      cell.addEventListener("click", playTurn.drawq);
+      cell.addEventListener("click", getData.readCoordinates);
     });
   };
+
+  const restart = () => {};
 
   const update = (x, y, player) => {
     boardState[x][y] = player.symbol;
@@ -29,21 +31,16 @@ const gameBoard = (() => {
   return { initialize, update, render };
 })();
 
-const playTurn = (() => {
-  const drawq = (e) => {
+const getData = (() => {
+  const readCoordinates = (e) => {
     let x = e.target.dataset.x;
     let y = e.target.dataset.y;
 
-    console.log("working");
-
-    gameBoard.update(x, y, playerOne);
-    gameBoard.render();
+    return x, y;
   };
 
-  return { drawq };
+  return { readCoordinates };
 })();
-
-const playRound = (() => {})();
 
 // Player creation factory function
 const player = (name, symbol) => {
@@ -58,4 +55,8 @@ const player = (name, symbol) => {
 const playerOne = player("Gabriel", "X");
 const playerTwo = player("Gandalf", "0");
 
-gameBoard.initialize();
+const playRound = () => {
+  gameBoard.initialize();
+};
+
+playRound();
