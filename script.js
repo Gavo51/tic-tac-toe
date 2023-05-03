@@ -1,47 +1,3 @@
-const gameBoard = (() => {
-  const boardState = [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-  ];
-
-  const initialize = () => {
-    document.querySelectorAll(".board-cell").forEach((cell) => {
-      cell.addEventListener("click", getData.readCoordinates);
-    });
-  };
-
-  const restart = () => {};
-
-  const update = (x, y, player) => {
-    boardState[x][y] = player.symbol;
-  };
-
-  const render = () => {
-    for (let i = 0; i < boardState.length; i++) {
-      for (let j = 0; j < boardState[i].length; j++) {
-        if (boardState[i][j] !== 0) {
-          document.querySelector(`[data-x="${i}"][data-y="${j}"]`).textContent =
-            boardState[i][j];
-        }
-      }
-    }
-  };
-
-  return { initialize, update, render };
-})();
-
-const getData = (() => {
-  const readCoordinates = (e) => {
-    let x = e.target.dataset.x;
-    let y = e.target.dataset.y;
-
-    return x, y;
-  };
-
-  return { readCoordinates };
-})();
-
 // Player creation factory function
 const player = (name, symbol) => {
   let score = 0;
@@ -52,33 +8,92 @@ const player = (name, symbol) => {
   return { name, symbol, getScore, updateScore };
 };
 
-const createPlayers = () => {
-  const playerList = {
-    0: player("Gabriel", "X"),
-    1: player("Gandalf", "0"),
+const playerList = {
+  1: player("Gabriel", "X"),
+  2: player("Gandalf", "0"),
+};
+
+const gameBoard = (() => {
+  const board = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+
+  const restart = () => {};
+
+  const update = (x, y, mark) => {
+    board[x][y] = mark;
   };
 
-  console.log(playerList[0].symbol);
-};
+  const render = () => {
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (board[i][j] !== 0) {
+          document.querySelector(`[data-x="${i}"][data-y="${j}"]`).textContent =
+            board[i][j];
+        }
+      }
+    }
+  };
 
-const playRound = () => {
-  gameBoard.initialize();
+  return { update, render, restart };
+})();
 
-  let playerTurn = 0;
+const playTurn = (() => {
+  const setMark = (e) => {
+    let x = e.target.dataset.x;
+    let y = e.target.dataset.y;
 
-  for (let i = 0; i <= 10; i++) {
-    switch (playerTurn) {
-      case 0:
-        console.log(playerTurn);
-        playerTurn++;
-        break;
+    switch (turn.getCurrentTurn()) {
       case 1:
-        console.log(playerTurn);
-        playerTurn = 0;
+        gameBoard.update(x, y, playerList[1].symbol);
+        turn.switchTurn();
+        break;
+      case 2:
+        gameBoard.update(x, y, playerList[2].symbol);
+        turn.switchTurn();
         break;
     }
-  }
+
+    gameBoard.render();
+  };
+
+  return { setMark };
+})();
+
+// Turn change module
+const turn = (() => {
+  let currentTurn = 1;
+
+  const switchTurn = () => {
+    switch (currentTurn) {
+      case 1:
+        currentTurn = 2;
+        break;
+      case 2:
+        currentTurn = 1;
+        break;
+    }
+  };
+
+  const getCurrentTurn = () => {
+    return currentTurn;
+  };
+
+  const restart = () => {
+    currentTurn = 1;
+  };
+
+  return { switchTurn, getCurrentTurn, restart };
+})();
+
+const playRound = () => {
+  const initialize = (() => {
+    document.querySelectorAll(".board-cell").forEach((cell) => {
+      cell.addEventListener("click", playTurn.setMark);
+    });
+  })();
 };
 
-createPlayers();
 playRound();
