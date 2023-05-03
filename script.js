@@ -52,11 +52,33 @@ const player = (name, symbol) => {
   return { name, symbol, getScore, updateScore };
 };
 
-const playerOne = player("Gabriel", "X");
-const playerTwo = player("Gandalf", "0");
+const createPlayers = () => {
+  const playerList = {
+    0: player("Gabriel", "X"),
+    1: player("Gandalf", "0"),
+  };
+
+  console.log(playerList[0].symbol);
+};
 
 const playRound = () => {
   gameBoard.initialize();
+
+  let playerTurn = 0;
+
+  for (let i = 0; i <= 10; i++) {
+    switch (playerTurn) {
+      case 0:
+        console.log(playerTurn);
+        playerTurn++;
+        break;
+      case 1:
+        console.log(playerTurn);
+        playerTurn = 0;
+        break;
+    }
+  }
 };
 
+createPlayers();
 playRound();
