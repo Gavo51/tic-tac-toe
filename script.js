@@ -26,6 +26,10 @@ const gameBoard = (() => {
     board[x][y] = mark;
   };
 
+  const getBoardStatus = () => {
+    return board;
+  };
+
   const render = () => {
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
@@ -37,7 +41,7 @@ const gameBoard = (() => {
     }
   };
 
-  return { update, render, restart };
+  return { getBoardStatus, update, render, restart };
 })();
 
 const playTurn = (() => {
@@ -45,28 +49,32 @@ const playTurn = (() => {
     let x = e.target.dataset.x;
     let y = e.target.dataset.y;
 
-    switch (turn.getCurrentTurn()) {
-      case 1:
-        gameBoard.update(x, y, playerList[1].symbol);
-        turn.switchTurn();
-        break;
-      case 2:
-        gameBoard.update(x, y, playerList[2].symbol);
-        turn.switchTurn();
-        break;
+    if (boardCheck.validateCell(x, y)) {
+      switch (turnControl.getCurrentTurn()) {
+        case 1:
+          gameBoard.update(x, y, playerList[1].symbol);
+          turnControl.changeTurn();
+          break;
+        case 2:
+          gameBoard.update(x, y, playerList[2].symbol);
+          turnControl.changeTurn();
+          break;
+      }
+      gameBoard.render();
+    } else {
+      alert("This cell isn't available, please choose a different one");
+      return;
     }
-
-    gameBoard.render();
   };
 
   return { setMark };
 })();
 
 // Turn change module
-const turn = (() => {
+const turnControl = (() => {
   let currentTurn = 1;
 
-  const switchTurn = () => {
+  const changeTurn = () => {
     switch (currentTurn) {
       case 1:
         currentTurn = 2;
@@ -85,15 +93,29 @@ const turn = (() => {
     currentTurn = 1;
   };
 
-  return { switchTurn, getCurrentTurn, restart };
+  return { changeTurn, getCurrentTurn, restart };
 })();
 
 const playRound = () => {
+  gameBoard.render();
   const initialize = (() => {
     document.querySelectorAll(".board-cell").forEach((cell) => {
       cell.addEventListener("click", playTurn.setMark);
     });
   })();
 };
+
+const boardCheck = (() => {
+  // Use the coordenates of the click event and checks if the cell is already marked
+  const validateCell = (x, y) => {
+    if (gameBoard.getBoardStatus()[x][y] === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  return { validateCell };
+})();
 
 playRound();
