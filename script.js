@@ -28,7 +28,7 @@ const gameBoard = (() => {
     board[x][y] = mark;
   };
 
-  const getBoardStatus = () => {
+  const getBoardState = () => {
     return board;
   };
 
@@ -44,7 +44,7 @@ const gameBoard = (() => {
     }
   };
 
-  return { getBoardStatus, update, render, restart };
+  return { getBoardState, update, render, restart };
 })();
 
 const playTurn = (() => {
@@ -55,15 +55,19 @@ const playTurn = (() => {
 
     // Call validation method to check if the cell is filled
     if (boardCheck.validateCell(x, y)) {
-      // Call turnControl to check the current turn and pick a player from the list using the index
-      // Then call board update method and pass the coordinates and the picked player's mark
+      // Call turnControl to check the current turn / pick a player from the list using it as the index
+      // Call gameBoard.update and pass the coordinates with the picked player's mark
       switch (turnControl.getCurrentTurn()) {
         case 1:
           gameBoard.update(x, y, playerList[1].symbol);
+          boardCheck.scanVertically(x, y, playerList[1].symbol);
+          boardCheck.scanHorizontally(x, y, playerList[1].symbol);
           turnControl.changeTurn();
           break;
         case 2:
           gameBoard.update(x, y, playerList[2].symbol);
+          boardCheck.scanVertically(x, y, playerList[2].symbol);
+          boardCheck.scanHorizontally(x, y, playerList[2].symbol);
           turnControl.changeTurn();
           break;
       }
@@ -81,7 +85,7 @@ const playTurn = (() => {
 const turnControl = (() => {
   let currentTurn = 1;
 
-  // Change between 1 and 2 when called
+  // Switch between 1 and 2 when called
   const changeTurn = () => {
     switch (currentTurn) {
       case 1:
@@ -114,16 +118,56 @@ const playRound = () => {
 };
 
 const boardCheck = (() => {
-  // Use the coordenates of the click event and checks if the cell is already marked
+  // Use the coordenates passed through playturn.setMark and checks if the cell is already marked
   const validateCell = (x, y) => {
-    if (gameBoard.getBoardStatus()[x][y] === 0) {
+    if (gameBoard.getBoardState()[x][y] === 0) {
       return true;
     } else {
       return false;
     }
   };
 
-  return { validateCell };
+  const scanVertically = (x, y, mark) => {
+    const board = gameBoard.getBoardState();
+
+    x = Number(x);
+    y = Number(y);
+
+    let matchCounter = 0;
+    for (let i = 0; i <= 2; i++) {
+      console.log(i, y);
+      if (board[i][y] === mark) {
+        matchCounter++;
+      }
+    }
+
+    if (matchCounter === 3) {
+      alert("Tree in a row!");
+      return true;
+    }
+  };
+
+  const scanHorizontally = (x, y, mark) => {
+    const board = gameBoard.getBoardState();
+
+    x = Number(x);
+    y = Number(y);
+
+    let matchCounter = 0;
+    for (let i = 0; i <= 2; i++) {
+      console.log(x, i);
+      if (board[x][i] === mark) {
+        matchCounter++;
+      }
+    }
+
+    if (matchCounter === 3) {
+      alert("Tree in a row!");
+      return true;
+    }
+  };
+
+  return { validateCell, scanVertically, scanHorizontally };
 })();
 
 playRound();
